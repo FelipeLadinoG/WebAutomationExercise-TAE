@@ -34,7 +34,6 @@ public class ProductsPage extends BasePage{
         waitAllElements();
 
         for (int i = 0; i < n; i++) {
-            System.out.println(addButtons.size()+"  "+i);
             this.addButtons.get(i).click();
         }
     }
