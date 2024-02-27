@@ -24,10 +24,11 @@ public class ProductsPage extends BasePage{
     }
 
 
-    public void addProducts(){
+    public void addProducts(int n){
         waitAllElements();
-        for (WebElement addProduct: this.addButtons){
-            addProduct.click();
+
+        for (int i = 0; i < n; i++) {
+            this.addButtons.get(i).click();
         }
     }
 

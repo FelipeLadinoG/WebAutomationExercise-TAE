@@ -42,14 +42,7 @@ public class FirstTest {
     @Test(dependsOnMethods = {"login"})
     public void buyProduct() {
         productsPage = new ProductsPage(driver, driver.getCurrentUrl());
-        // Espera implícita con FluentWait para esperar a que estén presentes todos los elementos de la página
-        Wait<WebDriver> wait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(30))
-                .pollingEvery(Duration.ofSeconds(5))
-                .ignoring(NoSuchElementException.class);
-
-        // Esperar a que estén presentes todos los elementos de la página
-        productsPage.addProducts();
+        productsPage.addProducts(6);
         productsPage.goToCart();
 
         cartPage = new CartPage(driver, driver.getCurrentUrl());
@@ -61,70 +54,23 @@ public class FirstTest {
 
         overviewPage = new OverviewPage(driver, driver.getCurrentUrl());
         overviewPage.clickFinishButton();
-
-//
-//        wait.until(driver -> {
-//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-//            return true;
-//        });
-//
-//        WebElement firstNameField = driver.findElement(By.id("first-name"));
-//        firstNameField.sendKeys("Omar");
-//        WebElement lastNameField = driver.findElement(By.id("last-name"));
-//        lastNameField.sendKeys("Felipe");
-//        WebElement postalCodeField = driver.findElement(By.id("postal-code"));
-//        postalCodeField.sendKeys("11029");
-//
-//        WebElement continueButton = driver.findElement(By.id("continue"));
-//        continueButton.click();
-//
-//        wait.until(driver -> {
-//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-//            return true;
-//        });
-//
-//        WebElement finishButton = driver.findElement(By.id("finish"));
-//        finishButton.click();
-//
-//
-//        WebElement thankYouMessage = driver.findElement(By.cssSelector("h2.complete-header"));
-//        String actualMessage = thankYouMessage.getText();
-//        String expectedMessage = "Thank you for your order!";
-//        Assert.assertEquals(actualMessage, expectedMessage, "El mensaje no coincide con 'Thank you for your order!'");
-//
         Assert.assertEquals(overviewPage.getFinishMessage(), "Thank you for your order!", "El mensaje no coincide con 'Thank you for your order!'");
     }
 
-//    @Test(dependsOnMethods = {"login"})
-//    public void removeProducts() {
-//        List<WebElement> products = driver.findElements(By.cssSelector("button.btn.btn_primary.btn_small.btn_inventory"));
-//        for (int i = 0; i < 3; i++) {
-//            products.get(i).click();
-//        }
-//
-//        Wait<WebDriver> wait = new FluentWait<>(driver)
-//                .withTimeout(Duration.ofSeconds(30))
-//                .pollingEvery(Duration.ofSeconds(5))
-//                .ignoring(NoSuchElementException.class);
-//
-//        wait.until(driver -> {
-//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-//            return true;
-//        });
-//        WebElement shoppingCartBadge = driver.findElement(By.cssSelector("a.shopping_cart_link > span.shopping_cart_badge"));
-//        shoppingCartBadge.click();
-//        wait.until(driver -> {
-//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-//            return true;
-//        });
-//        List<WebElement> removeButtons = driver.findElements(By.cssSelector("button.btn.btn_secondary.btn_small.cart_button"));
-//        for (WebElement removeButton: removeButtons){
-//            removeButton.click();
-//        }
-//
-//        removeButtons = driver.findElements(By.cssSelector("button.btn.btn_secondary.btn_small.cart_button"));
-//        Assert.assertTrue(removeButtons.isEmpty(), "El carrito no está vacío.");
-//    }
+
+
+    @Test(dependsOnMethods = {"login"})
+    public void removeProducts(){
+        productsPage = new ProductsPage(driver, driver.getCurrentUrl());
+        productsPage.addProducts(3);
+        productsPage.goToCart();
+
+        cartPage = new CartPage(driver, driver.getCurrentUrl());
+        cartPage.clickRemoveButtons();
+
+        cartPage.setRemoveButtons(cartPage.getRemoveButtons());
+        Assert.assertTrue(cartPage.getRemoveButtons().isEmpty(), "Shopping cart is not empty.");
+    }
 
 
 //    @Test(dependsOnMethods = {"login"})
