@@ -26,7 +26,6 @@ public class HomePage extends BasePage{
         this.userNameField.sendKeys(username);
         this.password.sendKeys(password);
         this.loginButton.click();
-
     }
 
 }

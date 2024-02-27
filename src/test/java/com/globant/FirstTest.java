@@ -1,34 +1,29 @@
 package com.globant;
 
-import com.globant.pages.BasePage;
-import com.globant.pages.HomePage;
-import org.junit.After;
-import org.openqa.selenium.By;
+import com.globant.pages.*;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-import java.sql.Time;
 import java.time.Duration;
-import java.util.List;
 
 import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
 
 public class FirstTest {
 
     private WebDriver driver;
     private BasePage basePage;
     private HomePage homePage;
+    private CartPage cartPage;
+    private PersonalInfoPage personalInfoPage;
+    private OverviewPage overviewPage;
+
+    private ProductsPage productsPage;
 
     @BeforeClass
     public void testSetup() {
@@ -44,40 +39,29 @@ public class FirstTest {
         homePage.setCredentials("standard_user", "secret_sauce");
     }
 
-//    @Test(dependsOnMethods = {"login"})
-//    public void buyProduct() {
-//        // Espera implícita con FluentWait para esperar a que estén presentes todos los elementos de la página
-//        Wait<WebDriver> wait = new FluentWait<>(driver)
-//                .withTimeout(Duration.ofSeconds(30))
-//                .pollingEvery(Duration.ofSeconds(5))
-//                .ignoring(NoSuchElementException.class);
-//
-//        // Esperar a que estén presentes todos los elementos de la página
-//        wait.until(driver -> {
-//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-//            return true;
-//        });
-//
-//        // Una vez que todos los elementos estén presentes, puedes continuar con tu acción
-//        List<WebElement> products = driver.findElements(By.cssSelector("button.btn.btn_primary.btn_small.btn_inventory"));
-//        for (WebElement product : products) {
-//            product.click();
-//        }
-//        wait.until(driver -> {
-//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-//            return true;
-//        });
-//        WebElement shoppingCartBadge = driver.findElement(By.cssSelector("a.shopping_cart_link > span.shopping_cart_badge"));
-//        shoppingCartBadge.click();
-//
-//
-//
-//        wait.until(driver -> {
-//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-//            return true;
-//        });
-//        WebElement checkoutButton = driver.findElement(By.id("checkout"));
-//        checkoutButton.click();
+    @Test(dependsOnMethods = {"login"})
+    public void buyProduct() {
+        productsPage = new ProductsPage(driver, driver.getCurrentUrl());
+        // Espera implícita con FluentWait para esperar a que estén presentes todos los elementos de la página
+        Wait<WebDriver> wait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(30))
+                .pollingEvery(Duration.ofSeconds(5))
+                .ignoring(NoSuchElementException.class);
+
+        // Esperar a que estén presentes todos los elementos de la página
+        productsPage.addProducts();
+        productsPage.goToCart();
+
+        cartPage = new CartPage(driver, driver.getCurrentUrl());
+        cartPage.clickCheckout();
+
+        personalInfoPage = new PersonalInfoPage(driver, driver.getCurrentUrl());
+        personalInfoPage.setPersonalInfo("omar", "felipe","12345");
+        personalInfoPage.clickContinueButton();
+
+        overviewPage = new OverviewPage(driver, driver.getCurrentUrl());
+        overviewPage.clickFinishButton();
+
 //
 //        wait.until(driver -> {
 //            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
@@ -107,7 +91,9 @@ public class FirstTest {
 //        String actualMessage = thankYouMessage.getText();
 //        String expectedMessage = "Thank you for your order!";
 //        Assert.assertEquals(actualMessage, expectedMessage, "El mensaje no coincide con 'Thank you for your order!'");
-//    }
+//
+        Assert.assertEquals(overviewPage.getFinishMessage(), "Thank you for your order!", "El mensaje no coincide con 'Thank you for your order!'");
+    }
 
 //    @Test(dependsOnMethods = {"login"})
 //    public void removeProducts() {
@@ -141,32 +127,32 @@ public class FirstTest {
 //    }
 
 
-    @Test(dependsOnMethods = {"login"})
-    public void logOut() {
-        Wait<WebDriver> wait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(30))
-                .pollingEvery(Duration.ofSeconds(5))
-                .ignoring(NoSuchElementException.class);
-
-        // Esperar a que estén presentes todos los elementos de la página
-        wait.until(driver -> {
-            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-            return true;
-        });
-
-        WebElement showMenu = driver.findElement(By.id("react-burger-menu-btn"));
-        showMenu.click();
-
-
-        wait.until(driver -> {
-            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-            return true;
-        });
-
-        WebElement logOut = driver.findElement(By.id("logout_sidebar_link"));
-        logOut.click();
-
-    }
+//    @Test(dependsOnMethods = {"login"})
+//    public void logOut() {
+//        Wait<WebDriver> wait = new FluentWait<>(driver)
+//                .withTimeout(Duration.ofSeconds(30))
+//                .pollingEvery(Duration.ofSeconds(5))
+//                .ignoring(NoSuchElementException.class);
+//
+//        // Esperar a que estén presentes todos los elementos de la página
+//        wait.until(driver -> {
+//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
+//            return true;
+//        });
+//
+//        WebElement showMenu = driver.findElement(By.id("react-burger-menu-btn"));
+//        showMenu.click();
+//
+//
+//        wait.until(driver -> {
+//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
+//            return true;
+//        });
+//
+//        WebElement logOut = driver.findElement(By.id("logout_sidebar_link"));
+//        logOut.click();
+//
+//    }
 
 
     @AfterClass
