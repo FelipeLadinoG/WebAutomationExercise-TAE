@@ -28,4 +28,9 @@ public class HomePage extends BasePage{
         this.loginButton.click();
     }
 
+    public boolean loginButtonAble (){
+        waitAllElements();
+        return loginButton.isDisplayed();
+    }
+
 }

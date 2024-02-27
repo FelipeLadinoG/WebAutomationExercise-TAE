@@ -6,9 +6,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.time.Duration;
 
@@ -25,24 +23,25 @@ public class FirstTest {
 
     private ProductsPage productsPage;
 
-    @BeforeClass
+    @BeforeMethod
     public void testSetup() {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\omar.ladino\\Documents\\Drivers\\chromedriver.exe");
         driver = new ChromeDriver();
         //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //driver.manage().window().maximize();
         homePage = new HomePage(driver, "https://www.saucedemo.com/");
+        login();
+
     }
 
-    @Test
     public void login() {
         homePage.setCredentials("standard_user", "secret_sauce");
     }
 
-    @Test(dependsOnMethods = {"login"})
+    @Test
     public void buyProduct() {
         productsPage = new ProductsPage(driver, driver.getCurrentUrl());
-        productsPage.addProducts(6);
+        productsPage.addProducts(3);
         productsPage.goToCart();
 
         cartPage = new CartPage(driver, driver.getCurrentUrl());
@@ -59,7 +58,8 @@ public class FirstTest {
 
 
 
-    @Test(dependsOnMethods = {"login"})
+
+    @Test
     public void removeProducts(){
         productsPage = new ProductsPage(driver, driver.getCurrentUrl());
         productsPage.addProducts(3);
@@ -73,35 +73,23 @@ public class FirstTest {
     }
 
 
-//    @Test(dependsOnMethods = {"login"})
-//    public void logOut() {
-//        Wait<WebDriver> wait = new FluentWait<>(driver)
-//                .withTimeout(Duration.ofSeconds(30))
-//                .pollingEvery(Duration.ofSeconds(5))
-//                .ignoring(NoSuchElementException.class);
-//
-//        // Esperar a que estén presentes todos los elementos de la página
-//        wait.until(driver -> {
-//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-//            return true;
-//        });
-//
-//        WebElement showMenu = driver.findElement(By.id("react-burger-menu-btn"));
-//        showMenu.click();
-//
-//
-//        wait.until(driver -> {
-//            driver.findElements(By.xpath("//*")); // Seleccionar todos los elementos de la página
-//            return true;
-//        });
-//
-//        WebElement logOut = driver.findElement(By.id("logout_sidebar_link"));
-//        logOut.click();
-//
-//    }
+
+    @Test
+    public void logOut (){
+        productsPage = new ProductsPage(driver, driver.getCurrentUrl());
+        productsPage.openMenu();
+        productsPage.clickLogOut();
+
+        homePage = new HomePage(driver, driver.getCurrentUrl());
+        Assert.assertTrue(homePage.loginButtonAble(), "Login failed.");
+
+    }
 
 
-    @AfterClass
+
+
+
+    @AfterMethod
     public void close() {
         driver.manage().window().minimize();
     }
